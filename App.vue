@@ -23,74 +23,21 @@
         <button @click="start">{{ running ? "Stop" : "Start" }}</button>
       </p>
 
-      <div>
-        <label
-          >Pitch Shift
-          <input
-            type="checkbox"
-            v-model="effects.pitchShift.on"
-            @change="toggleEffect('pitchShift')"
-        /></label>
-
-        Interval
-        <input
-          type="range"
-          min="-22"
-          max="22"
-          step="0.1"
-          v-model="effects.pitchShift.params.interval"
-          @change="adjuctEffect('feedbackDelay')"
-        />
-      </div>
-
-      <div>
-        <label
-          >Feedback
-          <input
-            type="checkbox"
-            v-model="effects.feedbackDelay.on"
-            @change="toggleEffect('feedbackDelay')"
-        /></label>
-
-        Feedback Delay
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          v-model="effects.feedbackDelay.params.delayTime"
-          @change="adjuctEffect('feedbackDelay')"
-        />
-
-        Feedback Amount
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          v-model="effects.feedbackDelay.params.feedback"
-          @change="adjuctEffect('feedbackDelay')"
-        />
-      </div>
-
-      <div>
-        <label
-          >Baby Crying
-          <input
-            type="checkbox"
-            v-model="effects.baby.on"
-            @change="toggleEffect('baby')"
-        /></label>
-
-        Volume
-        <input
-          type="range"
-          min="-30"
-          max="20"
-          step="0.1"
-          v-model="effects.baby.params.volume"
-          @change="adjuctEffect('baby')"
-        />
+      <div class="effect" v-for="e in effects">
+        <label>{{ e.label }} <input type="checkbox" v-model="e.on" @change="toggle(e)" /></label>
+        <div class="params">
+          <div v-for="param in e.params">
+            <label>{{ param.label }}</label>
+            <input
+              type="range"
+              :min="param.min"
+              :max="param.max"
+              step="0.01"
+              v-model="param.val"
+              @change="adjust(e)"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -99,12 +46,13 @@
 <script>
 import Vue from "vue";
 import * as Tone from "tone";
-import effects from "./effects";
+// import effects from "./effects";
 
 export default Vue.extend({
   created() {
     this.getDevices();
   },
+
   data() {
     return {
       inputs: [],
@@ -112,27 +60,8 @@ export default Vue.extend({
       inputDevice: null,
       outputDevice: null,
       hasSink: false,
-      feedbackMe: false,
-      feedbackMeDelay: 0,
-      feedbackMeFeedback: 0,
       running: false,
       effects: [],
-      effects: {
-        feedbackDelay: {
-          mic: true,
-          effect: null,
-          on: false,
-          params: { feedback: 0, delayTime: 0 },
-        },
-        pitchShift: { mic: true, effect: null, on: false, params: { interval: 0 } },
-        baby: { effect: null, on: false, file: "assets/185575__ciccarelli__crying-baby.wav.mp3", params: { volume: 0 } },
-        dog: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-        crying: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-        traffic: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-        construction: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-        peeing: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-        crowd: { effect: null, on: false, file: "", params: { volume: 0.5 } },
-      },
     };
   },
   methods: {
@@ -196,65 +125,91 @@ export default Vue.extend({
       this.mic.open(this.inputDevice);
       this.mic.connect(this.destination);
 
-      this.feedbackDelay = new Tone.FeedbackDelay(1, 0.5);
-      this.createEffects();
-    },
+      let effects = [
+        {
+          label: "Echo",
+          type: "mic",
+          params: [
+            { label: "Delay Time", key: "delayTime", min: 0, max: 1, val: 0 },
+            { label: "Feedback", key: "feedback", min: 0, max: 1, val: 0 },
+          ],
+          effect: new Tone.FeedbackDelay(0, 0),
+        },
+        {
+          label: "Pitch Shift",
+          type: "mic",
+          params: [{ label: "Interval", key: "interval", min: -20, max: 20, val: 0 }],
+          effect: new Tone.PitchShift(0),
+        },
+        {
+          label: "Upset Baby",
+          file: "assets/185575__ciccarelli__crying-baby.wav.mp3",
+        },
+        {
+          label: "Man Weeping",
+          file: "assets/200428__qubodup__man-crying-and-whimmering.flac.mp3",
+        },
+      ];
 
-    createEffects() {
-      this.effects.feedbackDelay.effect = new Tone.FeedbackDelay(0, 0);
-      this.effects.pitchShift.effect = new Tone.PitchShift(0);
-      this.effects.baby.effect = new Tone.Player(this.effects.baby.file);
-    },
-
-    toggleEffect(effect) {
-      const e = this.effects[effect];
-      console.log(e);
-      console.log(e.effect);
-
-      if (e.on) {
-        if (e.mic) this.mic.connect(e.effect);
-
+      for (let e of effects) {
         if (e.file) {
-          e.effect.loop = true
-          e.effect.start();
+          e.effect = new Tone.Player(e.file);
+          e.params = [{ label: "Volume", key: "volume", min: -30, max: 30, val: 0 }];
+          e.type = "file";
         }
+      }
 
-        e.effect.connect(this.destination);
-      } else {
-        if (e.mic) this.mic.disconnect(e.effect);
+      this.toneEffects = effects;
 
-        if (e.file) {
-          e.effect.stop();
-        }
-
-        e.effect.disconnect(this.destination);
+      for (let e of this.toneEffects) {
+        const effect = {
+          label: e.label,
+          type: e.type,
+          params: e.params,
+          on: false,
+        };
+        this.effects.push(effect);
       }
     },
 
-    adjuctEffect(effect) {
-      const e = this.effects[effect];
-      e.effect.set(e.params);
-    },
+    toggle(effect) {
+      const toneEffect = this.toneEffects.find((e) => e.label === effect.label).effect;
+      console.log(effect.on, this.destination, this.mic, toneEffect);
 
-    toggleFeedback() {
-      console.log(this.feedbackMe);
-      if (this.feedbackMe) {
-        this.mic.connect(this.feedbackDelay);
-        this.feedbackDelay.connect(this.destination);
+      if (effect.on) {
+        if (effect.type === "mic") {
+          this.mic.connect(toneEffect);
+        } else if (effect.type === "file") {
+          toneEffect.loop = true;
+          toneEffect.start();
+        }
+        toneEffect.connect(this.destination);
       } else {
-        this.mic.disconnect(this.feedbackDelay);
-        this.feedbackDelay.disconnect(this.destination);
+        if (effect.type === "mic") {
+          this.mic.disconnect(toneEffect);
+        } else if (effect.type === "file") {
+          toneEffect.stop();
+        }
+
+        toneEffect.disconnect(this.destination);
       }
     },
-    adjustFeedback() {
-      console.log(this.feedbackMeDelay, this.feedbackMeFeedback);
-      this.feedbackDelay.set({
-        delayTime: this.feedbackMeDelay,
-        feedback: this.feedbackMeFeedback,
-      });
+
+    adjust(effect) {
+      const toneEffect = this.toneEffects.find((e) => e.label === effect.label).effect;
+      let params = {};
+      for (const p of effect.params) {
+        params[p.key] = p.val;
+      }
+      toneEffect.set(params);
     },
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.effect {
+  padding: 20px;
+  border: 1px solid #000;
+}
+</style>
