@@ -11,8 +11,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build index.html --out-dir docs",
-    "dev": "parcel index.html --out-dir docs"
+    "build": "parcel build index.html --public-url ./ --out-dir docs",
+    "dev": "parcel index.html --public-url ./ --out-dir docs"
   },
   "author": "",
   "license": "ISC",
