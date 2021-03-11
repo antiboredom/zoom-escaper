@@ -523,6 +523,14 @@ button {
   transform: rotate(-20deg);
 }
 
+@media (max-width: 768px) {
+  header {
+    grid-template-columns: 100%;
+    /* grid-template-columns: 50px 1fr; */
+  }
+}
+
+
 /* label, .effect, .about, .instructions { */
 /*   background-color: #fff; */
 /* } */
