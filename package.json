@@ -19,6 +19,7 @@
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.2.0",
     "cssnano": "^4.1.10",
+    "parcel-plugin-static-files-copy": "^2.5.1",
     "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [

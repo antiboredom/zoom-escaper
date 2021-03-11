@@ -1,20 +1,51 @@
 <template>
   <div class="container">
-    <h1>Zoom Escaper</h1>
-    <p class="about">
-      Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
-      scenarios. It allows you to self-sabotage your audio stream, making your presence unbearable
-      to others.
-    </p>
+    <header>
+      <img src="images/logo.png" class="logo" />
+      <div>
+        <h1>Zoom Escaper</h1>
+
+        <p class="about">
+          Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
+          scenarios. It allows you to self-sabotage your audio stream, making your presence
+          unbearable to others.
+        </p>
+      </div>
+    </header>
 
     <div v-if="permission">
-      <p class="instructions">
-        <strong>Quick Setup:</strong> Install
-        <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no
-        affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom
-        settings. Preview what you sound like by selecting your headphones as the ouput, then when
-        ready, switch the output to "VB-Cable".
-      </p>
+      <div class="instructions">
+        <h2>Instructions</h2>
+        <p>
+          Zoom Escaper only works in Chrome on desktop, and requires a secondary piece of software
+          called VB-Cable.
+        </p>
+        <ol>
+          <li>
+            INSTALL <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a
+            ><span class="hidden"
+              >*
+              <div>VB-Cable is donationware, and has no affilition with Zoom Escaper</div></span
+            >
+            and when the installation is complete, refresh this website.
+          </li>
+          <li>
+            PREVIEW your sound by switching the Output dropdown on this site to your computer
+            speakers or headphones. Experiment with audio settings for your meeting.
+          </li>
+          <li>START YOUR ZOOM CALL and switch the Output on this page to "VB-Cable".</li>
+          <li>IN ZOOM set your microphone to "VB-Cable".</li>
+          <li>
+            TURNING IT OFF: Deactivate the Zoom Escaper by switching the microphone settings in Zoom
+            back to your computer's mic, and exit this website.
+          </li>
+        </ol>
+        <p>
+          Warning: During your Zoom call, only your coworkers will be able to hear the audio
+          interference applied to your voice. You will not be able to hear it yourself. Ensure that
+          you preview the use of this tool before deployment.
+        </p>
+      </div>
 
       <div v-if="hasSink">
         <div class="devices">
@@ -48,7 +79,9 @@
                 v-model="e.on"
                 @change="toggle(e)"
                 :id="e.label"
-              /><label :for="e.label">{{ e.label }}</label>
+              />
+              <label :for="e.label">{{ e.label }}</label>
+              <img :src="e.icon" />
             </div>
             <div class="params">
               <div v-for="param in e.params" class="param">
@@ -75,8 +108,8 @@
     </div>
 
     <footer>
-      Zoom Escaper works in Chrome only, and is made by <a href="https://lav.io">Sam Lavigne</a>.
-      View the code <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Also see
+      Zoom Escaper is made by <a href="https://lav.io">Sam Lavigne</a>. View the code
+      <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Also see
       <a href="https://antiboredom.github.io/zoom-deleter">Zoom Deleter</a>.
     </footer>
   </div>
@@ -117,6 +150,7 @@ export default Vue.extend({
           label: e.label,
           type: e.type,
           params: e.params,
+          icon: e.icon,
           on: false,
         };
         this.effects.push(effect);
@@ -259,7 +293,16 @@ export default Vue.extend({
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 body {
+  background-image: url("images/bg-left.gif"), url("images/bg-right.gif");
+  background-position: left center, right center;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+  background-size: auto 100%, auto 100%;
+  margin: 0;
 }
 
 body,
@@ -273,21 +316,44 @@ input {
 .container {
   max-width: 900px;
   margin: auto;
+  /* background-color: rgba(255, 255, 255, 0.9); */
+  background-color: #fff;
+  padding: 30px;
+  /* border: 5px solid red; */
+  /* border: 5px solid rgb(77, 135, 246);; */
+  border-width: 0px 5px;
 }
 
 h1 {
   font-weight: normal;
   font-size: 50px;
   margin: 0;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-weight: normal;
+  margin: 0;
+}
+
+.logo {
+  /* height: 200px; */
+  /* margin: auto; */
+  /* margin-bottom: 20px; */
+  display: block;
+  width: 100%;
 }
 
 p {
   margin: 0;
 }
 
-p,
-h1 {
-  margin-bottom: 30px;
+header {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  text-align: left;
+  margin-bottom: 20px;
+  grid-gap: 20px;
 }
 
 a {
@@ -297,13 +363,14 @@ a {
 .instructions {
   border: 1px solid red;
   padding: 20px;
+  margin-bottom: 30px;
 }
 
-p,
-h1,
-footer {
-  text-align: center;
-}
+/* p, */
+/* h1, */
+/* footer { */
+/*   text-align: center; */
+/* } */
 
 .about {
   font-size: 1.2em;
@@ -353,7 +420,7 @@ button {
 }
 .toggle {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr 40px;
   align-items: center;
   grid-gap: 5px;
   font-size: 20px;
@@ -362,11 +429,49 @@ button {
   margin-bottom: 5px;
 }
 
+.toggle img {
+  width: 100%;
+}
+
 .disabled {
   opacity: 0.5;
 }
 
 .active {
-  background-color: lightgreen;
+  background-color: #d4efff;
+  border-color: red;
 }
+
+.hidden {
+  position: relative;
+  cursor: help;
+}
+
+.hidden div {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #000;
+  width: 180px;
+  padding: 10px;
+  z-index: 1;
+  display: none;
+  left: 10px;
+  top: 10px;
+  font-size: 14px;
+}
+
+.hidden:hover div {
+  display: block;
+}
+
+.use-me {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: rotate(-20deg);
+}
+
+/* label, .effect, .about, .instructions { */
+/*   background-color: #fff; */
+/* } */
 </style>
