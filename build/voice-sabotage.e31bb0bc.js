@@ -60390,7 +60390,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 var _default = _vue.default.extend({
-  created() {},
+  async created() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      });
+      this.permission = true;
+      this.enableMic();
+    } catch (e) {
+      console.log(e);
+    }
+  },
 
   data() {
     return {
@@ -60428,6 +60439,21 @@ var _default = _vue.default.extend({
         return false;
       }
 
+      this.mic = new Tone.UserMedia();
+
+      if (!this.permission) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+          });
+        } catch (e) {
+          console.log(e);
+          this.permission = false;
+          return false;
+        }
+      }
+
       const devices = await navigator.mediaDevices.enumerateDevices();
       const inputs = devices.filter(d => d.kind === "audioinput").map(d => ({
         text: d.label,
@@ -60442,6 +60468,7 @@ var _default = _vue.default.extend({
       if (vbDevice) this.outputDevice = vbDevice.value;
       this.inputs = inputs;
       this.outputs = outputs;
+      this.permission = true;
     },
 
     async startAudio() {
@@ -60890,7 +60917,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50813" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51685" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -61066,4 +61093,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=voice-sabotage.e31bb0bc.js.map
+//# sourceMappingURL=/voice-sabotage.e31bb0bc.js.map

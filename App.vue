@@ -7,59 +7,69 @@
       to others.
     </p>
 
-    <p class="instructions">
-      <strong>Setup:</strong> Install <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom settings. Also make sure "VB-Cable" is selected as output on this website.
-    </p>
+    <div v-if="permission">
+      <p class="instructions">
+        <strong>Setup:</strong> Install
+        <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no
+        affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom
+        settings. Also make sure "VB-Cable" is selected as output on this website.
+      </p>
 
-    <div v-if="hasSink">
-      <div class="devices">
-        <label for="input-device">Microphone</label>
-        <select id="input-device" v-model="inputDevice" @change="changeDevice">
-          <option v-for="input in inputs" :value="input.value">
-            {{ input.text }}
-          </option>
-        </select>
-      </div>
+      <div v-if="hasSink">
+        <div class="devices">
+          <label for="input-device">Microphone</label>
+          <select id="input-device" v-model="inputDevice" @change="changeDevice">
+            <option v-for="input in inputs" :value="input.value">
+              {{ input.text }}
+            </option>
+          </select>
+        </div>
 
-      <div class="devices">
-        <label for="output-device">Output</label>
-        <select id="output-device" v-model="outputDevice" @change="changeDevice">
-          <option v-for="output in outputs" :value="output.value">
-            {{ output.text }}
-          </option>
-        </select>
-      </div>
+        <div class="devices">
+          <label for="output-device">Output</label>
+          <select id="output-device" v-model="outputDevice" @change="changeDevice">
+            <option v-for="output in outputs" :value="output.value">
+              {{ output.text }}
+            </option>
+          </select>
+        </div>
 
-      <div class="start-holder">
-        <button @click="start">{{ running ? "Stop" : "Start" }}</button>
-      </div>
+        <div class="start-holder">
+          <button @click="start">{{ running ? "Stop" : "Start" }}</button>
+        </div>
 
-      <div class="effects" :class="{ disabled: !running }">
-        <div class="effect" v-for="e in effects" :class="{ active: e.on }">
-          <div class="toggle">
-            <input
-              type="checkbox"
-              :disabled="!running"
-              v-model="e.on"
-              @change="toggle(e)"
-              :id="e.label"
-            /><label :for="e.label">{{ e.label }}</label>
-          </div>
-          <div class="params">
-            <div v-for="param in e.params" class="param">
-              <label>{{ param.label }}</label>
+        <div class="effects" :class="{ disabled: !running }">
+          <div class="effect" v-for="e in effects" :class="{ active: e.on }">
+            <div class="toggle">
               <input
-                type="range"
-                :min="param.min"
-                :max="param.max"
-                step="0.01"
-                v-model="param.val"
-                @change="adjust(e)"
+                type="checkbox"
                 :disabled="!running"
-              />
+                v-model="e.on"
+                @change="toggle(e)"
+                :id="e.label"
+              /><label :for="e.label">{{ e.label }}</label>
+            </div>
+            <div class="params">
+              <div v-for="param in e.params" class="param">
+                <label>{{ param.label }}</label>
+                <input
+                  type="range"
+                  :min="param.min"
+                  :max="param.max"
+                  step="0.01"
+                  v-model="param.val"
+                  @change="adjust(e)"
+                  :disabled="!running"
+                />
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="start-holder">
+        <button @click="enableMic">Enable Microphone</button>
       </div>
     </div>
   </div>
@@ -71,17 +81,14 @@ import * as Tone from "tone";
 import effects from "./effects";
 
 export default Vue.extend({
-  created() {
-    this.getDevices();
+  async created() {
 
-    for (let e of effects) {
-      const effect = {
-        label: e.label,
-        type: e.type,
-        params: e.params,
-        on: false,
-      };
-      this.effects.push(effect);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+      this.permission = true;
+      this.enableMic();
+    } catch (e) {
+      console.log(e);
     }
   },
 
@@ -94,15 +101,41 @@ export default Vue.extend({
       hasSink: false,
       running: false,
       effects: [],
+      permission: false,
     };
   },
   methods: {
+    async enableMic() {
+      this.getDevices();
+
+      for (let e of effects) {
+        const effect = {
+          label: e.label,
+          type: e.type,
+          params: e.params,
+          on: false,
+        };
+        this.effects.push(effect);
+      }
+    },
+
     async getDevices() {
       const sink = Audio.prototype.setSinkId;
       this.hasSink = sink ? true : false;
 
       if (!sink) {
         return false;
+      }
+      this.mic = new Tone.UserMedia();
+
+      if (!this.permission) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+        } catch(e) {
+          console.log(e);
+          this.permission = false;
+          return false;
+        }
       }
 
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -120,6 +153,7 @@ export default Vue.extend({
 
       this.inputs = inputs;
       this.outputs = outputs;
+      this.permission = true;
     },
 
     async startAudio() {
@@ -241,7 +275,8 @@ p {
   margin: 0;
 }
 
-p, h1 {
+p,
+h1 {
   margin-bottom: 30px;
 }
 
