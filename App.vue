@@ -9,7 +9,7 @@
 
     <div v-if="permission">
       <p class="instructions">
-        <strong>Setup:</strong> Install
+        <strong>Quick Setup:</strong> Install
         <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no
         affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom
         settings. Preview what you sound like by selecting your headphones as the ouput, then when
@@ -208,8 +208,8 @@ export default Vue.extend({
             e.on = false;
             this.toggle(e);
           });
+        this.startAudio();
       }
-      this.startAudio();
     },
 
     toggle(effect) {
@@ -283,6 +283,8 @@ a {
 }
 
 .instructions {
+  border: 1px solid red;
+  padding: 20px;
 }
 
 .start-holder {
