@@ -4,7 +4,7 @@
     <p class="about">
       Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
       scenarios. It allows you to self-sabotage your audio stream, making your presence unbearable
-      to others. Zoom Escaper works in Chrome only, and is made by <a href="https://lav.io">Sam Lavigne</a>.
+      to others.
     </p>
 
     <div v-if="permission">
@@ -73,6 +73,12 @@
         <button @click="enableMic">Enable Microphone</button>
       </div>
     </div>
+
+    <footer>
+      Zoom Escaper works in Chrome only, and is made by <a href="https://lav.io">Sam Lavigne</a>.
+      View the code <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Also see
+      <a href="https://antiboredom.github.io/zoom-deleter">Zoom Deleter</a>.
+    </footer>
   </div>
 </template>
 
@@ -191,6 +197,12 @@ export default Vue.extend({
       if (!this.running) {
         this.startAudio();
       } else {
+        this.effects
+          .filter((e) => e.on)
+          .forEach((e) => {
+            e.on = false;
+            this.toggle(e);
+          });
         this.running = false;
         this.mic.close();
         this.audio = null;
@@ -285,6 +297,21 @@ a {
 .instructions {
   border: 1px solid red;
   padding: 20px;
+}
+
+p,
+h1,
+footer {
+  text-align: center;
+}
+
+.about {
+  font-size: 1.2em;
+}
+
+footer {
+  padding: 20px 0px;
+  font-size: 0.8em;
 }
 
 .start-holder {
