@@ -13,40 +13,41 @@
       </div>
     </header>
 
-    <div v-if="permission">
-      <div class="instructions">
-        <h2>Instructions</h2>
-        <p>
-          Zoom Escaper only works in Chrome on desktop, and requires a secondary piece of software
-          called VB-Cable.
-        </p>
-        <ol>
-          <li>
-            INSTALL <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a
-            ><span class="hidden"
-              >*
-              <div>VB-Cable is donationware, and has no affilition with Zoom Escaper</div></span
-            >
-            and when the installation is complete, refresh this website.
-          </li>
-          <li>
-            PREVIEW your sound by switching the Output dropdown on this site to your computer
-            speakers or headphones. Experiment with audio settings for your meeting.
-          </li>
-          <li>START YOUR ZOOM CALL and switch the Output on this page to "VB-Cable".</li>
-          <li>IN ZOOM set your microphone to "VB-Cable".</li>
-          <li>
-            TURNING IT OFF: Deactivate the Zoom Escaper by switching the microphone settings in Zoom
-            back to your computer's mic, and exit this website.
-          </li>
-        </ol>
-        <p>
-          Warning: During your Zoom call, only your coworkers will be able to hear the audio
-          interference applied to your voice. You will not be able to hear it yourself. Ensure that
-          you preview the use of this tool before deployment.
-        </p>
-      </div>
+    <div class="instructions">
+      <h2>Instructions</h2>
+      <p>
+        Zoom Escaper only works in Chrome on desktop, and requires a secondary piece of software
+        called VB-Cable.
+      </p>
+      <ol>
+        <li v-if="!permission">ENABLE microphone access on this site by clicking the big "Enable Microphone" button (you only need to do this once).</li>
+        <li>
+          INSTALL <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a
+          ><span class="hidden"
+            >*
+            <div>VB-Cable is donationware, and has no affilition with Zoom Escaper</div></span
+          >
+          and when the installation is complete, refresh this website.
+        </li>
+        <li>
+          PREVIEW your sound by switching the Output dropdown on this site to your computer speakers
+          or headphones. Experiment with audio settings for your meeting.
+        </li>
+        <li>START YOUR ZOOM CALL and switch the Output on this page to "VB-Cable".</li>
+        <li>IN ZOOM set your microphone to "VB-Cable".</li>
+        <li>
+          TURNING IT OFF: Deactivate the Zoom Escaper by switching the microphone settings in Zoom
+          back to your computer's mic, and exit this website.
+        </li>
+      </ol>
+      <p>
+        Warning: During your Zoom call, only your coworkers will be able to hear the audio
+        interference applied to your voice. You will not be able to hear it yourself. Ensure that
+        you preview the use of this tool before deployment.
+      </p>
+    </div>
 
+    <div v-if="permission">
       <div v-if="hasSink">
         <div class="devices">
           <label for="input-device">Microphone</label>
@@ -364,6 +365,16 @@ a {
   border: 1px solid red;
   padding: 20px;
   margin-bottom: 30px;
+  font-size: 0.9em;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 5px 0px;
 }
 
 /* p, */
