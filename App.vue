@@ -20,7 +20,10 @@
         called VB-Cable.
       </p>
       <ol>
-        <li v-if="!permission">ENABLE microphone access on this site by clicking the big "Enable Microphone" button (you only need to do this once).</li>
+        <li v-if="!permission">
+          ENABLE microphone access on this site by clicking the big "Enable Microphone" button (you
+          only need to do this once).
+        </li>
         <li>
           INSTALL <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a
           ><span class="hidden"
@@ -120,6 +123,49 @@
 import Vue from "vue";
 import * as Tone from "tone";
 import effects from "./effects";
+
+class VolumeEffect {
+  constructor(dest) {
+    this.dest = dest;
+    this.suspended = false;
+    this.frequency = 500;
+    this.active = false;
+  }
+
+  start() {
+    if (this.active) {
+      this.timeout = setTimeout(() => {
+        if (this.suspended) {
+          this.dest.context.resume();
+          this.suspended = false;
+        } else {
+          this.dest.context.suspend();
+          this.suspended = true;
+        }
+        this.start();
+      }, parseInt(Math.random() * this.frequency));
+    }
+  }
+
+  connect() {
+    this.active = true;
+    clearTimeout(this.timeout);
+    this.start();
+  }
+
+  disconnect() {
+    this.active = false
+    clearTimeout(this.timeout);
+  }
+
+  set(params) {
+    clearTimeout(this.timeout);
+    this.frequency = params.frequency;
+    if (this.active) {
+      this.start();
+    }
+  }
+}
 
 export default Vue.extend({
   async created() {
@@ -222,6 +268,8 @@ export default Vue.extend({
           e.effect = new Tone[e.function](...params);
         } else if (e.type === "file") {
           e.effect = new Tone.Player(e.file);
+        } else {
+          e.effect = new VolumeEffect(this.destination);
         }
       }
 
