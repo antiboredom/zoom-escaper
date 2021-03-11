@@ -8,14 +8,14 @@ let effects = [
       { label: "Delay Time", key: "delayTime", min: 0, max: 1, val: 0 },
       { label: "Feedback", key: "feedback", min: 0, max: 1, val: 0 },
     ],
-    effect: new Tone.FeedbackDelay(0, 0),
+    // effect: new Tone.FeedbackDelay(0, 0),
     function: "FeedbackDelay"
   },
   {
     label: "Pitch Shift",
     type: "mic",
     params: [{ label: "Interval", key: "interval", min: -20, max: 20, val: 0 }],
-    effect: new Tone.PitchShift(0),
+    // effect: new Tone.PitchShift(0),
     function: "PitchShift"
   },
   {
