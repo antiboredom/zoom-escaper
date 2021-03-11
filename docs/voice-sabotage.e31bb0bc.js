@@ -59909,8 +59909,8 @@ let effects = [{
   params: [{
     label: "Interval",
     key: "interval",
-    min: -12,
-    max: 12,
+    min: -22,
+    max: 22,
     val: 0
   }],
   function: "PitchShift"
@@ -60370,6 +60370,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = _vue.default.extend({
   created() {
     this.getDevices();
@@ -60529,6 +60538,14 @@ exports.default = _default;
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("h1", [_vm._v("Zoom Escaper")]),
+    _vm._v(" "),
+    _c("p", { staticClass: "about" }, [
+      _vm._v(
+        "\n    Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing\n    scenarios. It allows you to self-sabotage your audio stream, making your presence unbearable\n    to others.\n  "
+      )
+    ]),
+    _vm._v(" "),
+    _vm._m(0),
     _vm._v(" "),
     _vm.hasSink
       ? _c("div", [
@@ -60736,7 +60753,25 @@ exports.default = _default;
       : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "instructions" }, [
+      _c("strong", [_vm._v("Setup:")]),
+      _vm._v(" Install "),
+      _c(
+        "a",
+        { attrs: { href: "https://vb-audio.com/Cable/", target: "_blank" } },
+        [_vm._v("VB-Cable")]
+      ),
+      _vm._v(
+        ' (donationware, no affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom settings. Also make sure "VB-Cable" is selected as output on this website.\n  '
+      )
+    ])
+  }
+]
 render._withStripped = true
 
           return {
@@ -60809,7 +60844,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49337" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49398" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -17,7 +17,24 @@ input {
 h1 {
   font-weight: normal;
   font-size: 50px;
+  margin: 0;
 }
+
+p {
+  margin: 0;
+}
+
+p, h1 {
+  margin-bottom: 30px;
+}
+
+a {
+  color: red;
+}
+
+.instructions {
+}
+
 .start-holder {
   text-align: center;
   margin: 20px 0px;

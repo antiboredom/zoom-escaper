@@ -1,6 +1,15 @@
 <template>
   <div class="container">
     <h1>Zoom Escaper</h1>
+    <p class="about">
+      Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
+      scenarios. It allows you to self-sabotage your audio stream, making your presence unbearable
+      to others.
+    </p>
+
+    <p class="instructions">
+      <strong>Setup:</strong> Install <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom settings. Also make sure "VB-Cable" is selected as output on this website.
+    </p>
 
     <div v-if="hasSink">
       <div class="devices">
@@ -225,7 +234,24 @@ input {
 h1 {
   font-weight: normal;
   font-size: 50px;
+  margin: 0;
 }
+
+p {
+  margin: 0;
+}
+
+p, h1 {
+  margin-bottom: 30px;
+}
+
+a {
+  color: red;
+}
+
+.instructions {
+}
+
 .start-holder {
   text-align: center;
   margin: 20px 0px;

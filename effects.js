@@ -13,7 +13,7 @@ let effects = [
   {
     label: "Pitch Shift",
     type: "mic",
-    params: [{ label: "Interval", key: "interval", min: -12, max: 12, val: 0 }],
+    params: [{ label: "Interval", key: "interval", min: -22, max: 22, val: 0 }],
     function: "PitchShift"
   },
   {
