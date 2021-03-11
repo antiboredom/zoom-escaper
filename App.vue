@@ -4,7 +4,7 @@
     <p class="about">
       Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
       scenarios. It allows you to self-sabotage your audio stream, making your presence unbearable
-      to others.
+      to others. Zoom Escaper works in Chrome only, and is made by <a href="https://lav.io">Sam Lavigne</a>.
     </p>
 
     <div v-if="permission">
@@ -12,7 +12,8 @@
         <strong>Setup:</strong> Install
         <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a> (donationware, no
         affiliation with Zoom Escaper), then set your microphone to "VB-Cable" in your Zoom
-        settings. Also make sure "VB-Cable" is selected as output on this website.
+        settings. Preview what you sound like by selecting your headphones as the ouput, then when
+        ready, switch the output to "VB-Cable".
       </p>
 
       <div v-if="hasSink">
@@ -82,13 +83,10 @@ import effects from "./effects";
 
 export default Vue.extend({
   async created() {
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
-      this.permission = true;
+    const permissions = await navigator.permissions.query({ name: "microphone" });
+    this.permission = permissions.state === "granted";
+    if (this.permission) {
       this.enableMic();
-    } catch (e) {
-      console.log(e);
     }
   },
 
@@ -130,8 +128,8 @@ export default Vue.extend({
 
       if (!this.permission) {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
-        } catch(e) {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        } catch (e) {
           console.log(e);
           this.permission = false;
           return false;
