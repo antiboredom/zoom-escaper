@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <h1>Zoom Escaper</h1>
 
     <div v-if="hasSink">
@@ -114,48 +114,36 @@ export default Vue.extend({
     },
 
     async startAudio() {
-        this.context = new AudioContext({ sampleRate: 48000 });
+      this.context = new AudioContext({ sampleRate: 48000 });
 
-        this.destination = new MediaStreamAudioDestinationNode(this.context, {
-          channelCountMode: "explicit",
-          channelCount: 1,
-          channelInterpretation: "speakers",
-        });
+      this.destination = new MediaStreamAudioDestinationNode(this.context, {
+        channelCountMode: "explicit",
+        channelCount: 1,
+        channelInterpretation: "speakers",
+      });
 
-        this.audio = new Audio();
-        this.audio.srcObject = this.destination.stream;
-        await this.audio.setSinkId(this.outputDevice);
-        this.audio.play();
+      this.audio = new Audio();
+      this.audio.srcObject = this.destination.stream;
+      await this.audio.setSinkId(this.outputDevice);
+      this.audio.play();
 
-        // this.stream = await navigator.mediaDevices.getUserMedia({
-        //   audio: {
-        //     deviceId: { exact: this.inputDevice },
-        //     channelCount: { ideal: 1 },
-        //     noiseSuppression: { ideal: false },
-        //     echoCancellation: { ideal: true },
-        //     autoGainControl: { ideal: false },
-        //     sampleRate: { ideal: 48000 },
-        //   },
-        // });
-        // this.source = this.context.createMediaStreamSource(this.stream);
+      Tone.setContext(this.context);
 
-        Tone.setContext(this.context);
-        const synth = new Tone.Synth();
-        synth.connect(this.destination);
-        synth.triggerAttackRelease("C4", "8n");
+      this.mic = new Tone.UserMedia();
+      this.mic.open(this.inputDevice);
+      this.mic.connect(this.destination);
 
-        this.mic = new Tone.UserMedia();
-        this.mic.open(this.inputDevice);
-        this.mic.connect(this.destination);
-
-        // actually instantiate the tone effects now that everything else is good to go
-        for (let e of effects) {
+      // actually instantiate the tone effects now that everything else is good to go
+      for (let e of effects) {
+        if (e.type === "mic") {
           const params = e.params.map((p) => p.val);
           e.effect = new Tone[e.function](...params);
+        } else if (e.type === "file") {
+          e.effect = new Tone.Player(e.file);
         }
+      }
 
-        this.running = true;
-
+      this.running = true;
     },
 
     async start() {
@@ -172,14 +160,19 @@ export default Vue.extend({
 
     async changeDevice() {
       if (this.running) {
-        this.startAudio();
+        console.log(this.effects.filter((e) => e.on));
+        this.effects
+          .filter((e) => e.on)
+          .forEach((e) => {
+            e.on = false;
+            this.toggle(e);
+          });
       }
-
+      this.startAudio();
     },
 
     toggle(effect) {
       const toneEffect = effects.find((e) => e.label === effect.label).effect;
-      console.log(effect.on, this.destination, this.mic, toneEffect);
 
       if (effect.on) {
         if (effect.type === "mic") {
@@ -214,15 +207,19 @@ export default Vue.extend({
 
 <style>
 body {
-  max-width: 900px;
-  margin: auto;
 }
+
 body,
 select,
 button,
 input {
   font-size: 18px;
   font-family: serif;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
 }
 
 h1 {
@@ -245,13 +242,21 @@ button {
 
 .effects {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  /* grid-template-columns: 1fr 1fr 1fr; */
+  grid-template-columns: repeat(12, 1fr);
   grid-gap: 20px;
 }
 .effect {
   padding: 20px;
   border: 1px solid #000;
+  grid-column: span 6;
 }
+
+.effect:nth-child(1),
+.effect:nth-child(2) {
+  grid-column: span 6;
+}
+
 .param {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -264,6 +269,9 @@ button {
   align-items: center;
   grid-gap: 5px;
   font-size: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .disabled {

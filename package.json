@@ -11,13 +11,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build index.html",
-    "dev": "parcel index.html"
+    "build": "parcel build index.html --out-dir docs",
+    "dev": "parcel index.html --out-dir docs"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.2.0",
+    "cssnano": "^4.1.10",
     "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [

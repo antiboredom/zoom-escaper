@@ -1,0 +1,75 @@
+body {
+}
+
+body,
+select,
+button,
+input {
+  font-size: 18px;
+  font-family: serif;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 50px;
+}
+.start-holder {
+  text-align: center;
+  margin: 20px 0px;
+}
+button {
+  font-size: 30px;
+}
+.devices {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.effects {
+  display: grid;
+  /* grid-template-columns: 1fr 1fr 1fr; */
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
+}
+.effect {
+  padding: 20px;
+  border: 1px solid #000;
+  grid-column: span 6;
+}
+
+.effect:nth-child(1),
+.effect:nth-child(2) {
+  grid-column: span 6;
+}
+
+.param {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  margin: 10px 0px;
+}
+.toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  grid-gap: 5px;
+  font-size: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.active {
+  background-color: lightgreen;
+}
