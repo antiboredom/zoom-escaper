@@ -296,14 +296,7 @@ export default Vue.extend({
 
     async changeDevice() {
       if (this.running) {
-        console.log(this.effects.filter((e) => e.on));
-        this.effects
-          .filter((e) => e.on)
-          .forEach((e) => {
-            e.on = false;
-            this.toggle(e);
-          });
-        this.startAudio();
+        await this.audio.setSinkId(this.outputDevice);
       }
     },
 
