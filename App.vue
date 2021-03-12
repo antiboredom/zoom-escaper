@@ -96,7 +96,7 @@
                   :max="param.max"
                   step="0.01"
                   v-model="param.val"
-                  @change="adjust(e)"
+                  @input="adjust(e)"
                   :disabled="!running"
                 />
               </div>
