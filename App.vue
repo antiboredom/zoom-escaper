@@ -552,6 +552,13 @@ button {
     grid-template-columns: 100%;
     /* grid-template-columns: 50px 1fr; */
   }
+  .effects {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .logo {
+    width: 40%;
+    margin: auto;
+  }
 }
 
 /* label, .effect, .about, .instructions { */
