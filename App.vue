@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <header>
-      <img src="images/logo.png" class="logo" alt="Zoom Escaper Logo: The Zoom Icon with crudely drawn arrows over it" />
+      <img
+        src="images/logo.png"
+        class="logo"
+        alt="Zoom Escaper Logo: The Zoom Icon with crudely drawn arrows over it"
+      />
       <div>
         <h1>Zoom Escaper</h1>
 
@@ -51,63 +55,65 @@
     </div>
 
     <div v-if="permission">
-      <div v-if="hasSink">
-        <div class="devices">
-          <label for="input-device">Microphone</label>
-          <select id="input-device" v-model="inputDevice" @change="changeDevice">
-            <option v-for="input in inputs" :value="input.value">
-              {{ input.text }}
-            </option>
-          </select>
-        </div>
+      <div class="devices">
+        <label for="input-device">Microphone</label>
+        <select id="input-device" v-model="inputDevice" @change="changeDevice">
+          <option v-for="input in inputs" :value="input.value">
+            {{ input.text }}
+          </option>
+        </select>
+      </div>
 
-        <div class="devices">
-          <label for="output-device">Output</label>
-          <select id="output-device" v-model="outputDevice" @change="changeDevice">
-            <option v-for="output in outputs" :value="output.value">
-              {{ output.text }}
-            </option>
-          </select>
-        </div>
+      <div class="devices">
+        <label for="output-device">Output</label>
+        <select id="output-device" v-model="outputDevice" @change="changeDevice">
+          <option v-for="output in outputs" :value="output.value">
+            {{ output.text }}
+          </option>
+        </select>
+      </div>
 
-        <div class="start-holder">
-          <button @click="start">{{ running ? "Stop" : "Start" }}</button>
-        </div>
-
-        <div class="effects" :class="{ disabled: !running }">
-          <div class="effect" v-for="e in effects" :class="{ active: e.on }">
-            <div class="toggle">
-              <input
-                type="checkbox"
-                :disabled="!running"
-                v-model="e.on"
-                @change="toggle(e)"
-                :id="e.label"
-              />
-              <label :for="e.label">{{ e.label }}</label>
-              <img :src="e.icon" :alt="e.label + ' icon'"/>
-            </div>
-            <div class="params">
-              <div v-for="param in e.params" class="param">
-                <label>{{ param.label }}</label>
-                <input
-                  type="range"
-                  :min="param.min"
-                  :max="param.max"
-                  step="0.01"
-                  v-model="param.val"
-                  @input="adjust(e)"
-                  :disabled="!running"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="start-holder">
+        <button @click="start">{{ running ? "Stop" : "Start" }}</button>
       </div>
     </div>
+
     <div v-else>
       <div class="start-holder">
         <button @click="enableMic">Enable Microphone</button>
+      </div>
+    </div>
+
+    <div v-if="error" class="error">{{error}}</div>
+
+
+    <div class="effects" :class="{ disabled: !running }">
+      <div class="effect" v-for="e in effects" :class="{ active: e.on }">
+        <div class="toggle">
+          <input
+            type="checkbox"
+            :disabled="!running"
+            v-model="e.on"
+            @change="toggle(e)"
+            :id="e.label"
+          />
+          <label :for="e.label">{{ e.label }}</label>
+          <img :src="e.icon" :alt="e.label + ' icon'" />
+        </div>
+        <div class="params">
+          <div v-for="param in e.params" class="param">
+            <label>{{ param.label }}</label>
+            <input
+              type="range"
+              :min="param.min"
+              :max="param.max"
+              step="0.01"
+              v-model="param.val"
+              @input="adjust(e)"
+              :disabled="!running"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -154,7 +160,7 @@ class VolumeEffect {
   }
 
   disconnect() {
-    this.active = false
+    this.active = false;
     clearTimeout(this.timeout);
   }
 
@@ -175,8 +181,20 @@ export default Vue.extend({
       if (this.permission) {
         this.enableMic();
       }
-    } catch(e) {
+    } catch (e) {
       console.log("can't get permissions");
+      this.error = "Sorry, this browser isn't compatible with Zoom Escaper. Please try Chrome on desktop.";
+    }
+
+    for (let e of effects) {
+      const effect = {
+        label: e.label,
+        type: e.type,
+        params: e.params,
+        icon: e.icon,
+        on: false,
+      };
+      this.effects.push(effect);
     }
   },
 
@@ -190,22 +208,13 @@ export default Vue.extend({
       running: false,
       effects: [],
       permission: false,
+      error: null,
     };
   },
+
   methods: {
     async enableMic() {
       this.getDevices();
-
-      for (let e of effects) {
-        const effect = {
-          label: e.label,
-          type: e.type,
-          params: e.params,
-          icon: e.icon,
-          on: false,
-        };
-        this.effects.push(effect);
-      }
     },
 
     async getDevices() {
@@ -409,7 +418,7 @@ a {
 .instructions {
   border: 1px solid red;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-size: 0.9em;
 }
 
@@ -526,6 +535,11 @@ button {
   top: 0;
   transform: rotate(-20deg);
 }
+.error {
+  margin: 20px 0px;
+  background-color: lightpink;
+  padding: 20px;
+}
 
 @media (max-width: 768px) {
   header {
@@ -533,7 +547,6 @@ button {
     /* grid-template-columns: 50px 1fr; */
   }
 }
-
 
 /* label, .effect, .about, .instructions { */
 /*   background-color: #fff; */
