@@ -21,6 +21,26 @@ let effects = [
   //   function: "PitchShift",
   //   icon: require("./images/shift.gif"),
   // },
+  // {
+  //   label: "Chorus",
+  //   type: "mic",
+  //   params: [
+  //     { label: "Frequency", key: "frequency", min: 0, max: 20, val: 4 },
+  //     { label: "Delay Time", key: "delayTime", min: 0, max: 20, val: 1 },
+  //     { label: "Depth", key: "depth", min: 0, max: 1, val: 0.1 },
+  //   ],
+  //   function: "Chorus",
+  //   icon: require("./images/echo.gif"),
+  // },
+  // {
+  //   label: "Distortion",
+  //   type: "mic",
+  //   params: [
+  //     { label: "Distortion", key: "distortion", min: 0, max: 1, val: 0.2 },
+  //   ],
+  //   function: "Distortion",
+  //   icon: require("./images/echo.gif"),
+  // },
   {
     label: "Upset Baby",
     file: "assets/185575__ciccarelli__crying-baby.wav.mp3",
