@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <header>
-      <img src="images/logo.png" class="logo" />
+      <img src="images/logo.png" class="logo" alt="Zoom Escaper Logo: The Zoom Icon with crudely drawn arrows over it" />
       <div>
         <h1>Zoom Escaper</h1>
 
@@ -85,7 +85,7 @@
                 :id="e.label"
               />
               <label :for="e.label">{{ e.label }}</label>
-              <img :src="e.icon" />
+              <img :src="e.icon" :alt="e.label + ' icon'"/>
             </div>
             <div class="params">
               <div v-for="param in e.params" class="param">
