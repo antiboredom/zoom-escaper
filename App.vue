@@ -169,10 +169,14 @@ class VolumeEffect {
 
 export default Vue.extend({
   async created() {
-    const permissions = await navigator.permissions.query({ name: "microphone" });
-    this.permission = permissions.state === "granted";
-    if (this.permission) {
-      this.enableMic();
+    try {
+      const permissions = await navigator.permissions.query({ name: "microphone" });
+      this.permission = permissions.state === "granted";
+      if (this.permission) {
+        this.enableMic();
+      }
+    } catch(e) {
+      console.log("can't get permissions");
     }
   },
 
