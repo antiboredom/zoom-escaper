@@ -84,8 +84,7 @@
       </div>
     </div>
 
-    <div v-if="error" class="error">{{error}}</div>
-
+    <div v-if="error" class="error">{{ error }}</div>
 
     <div class="effects" :class="{ disabled: !running }">
       <div class="effect" v-for="e in effects" :class="{ active: e.on }">
@@ -119,7 +118,13 @@
 
     <footer>
       Zoom Escaper is made by <a href="https://lav.io">Sam Lavigne</a>. View the code
-      <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Also see
+      <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Sound sample credits:
+      <a href="https://freesound.org/people/ciccarelli/sounds/185575/">1</a>,
+      <a href="https://freesound.org/people/qubodup/sounds/200428/">2</a>,
+      <a href="https://freesound.org/people/Meepalicious/sounds/244807/">3</a>,
+      <a href="https://freesound.org/people/rpdud27/sounds/474484/">4</a>,
+      <a href="https://freesound.org/people/InspectorJ/sounds/400991/">5</a>,
+      <a href="https://freesound.org/people/nomerodin1/sounds/473997/">6</a>. Also see
       <a href="https://antiboredom.github.io/zoom-deleter">Zoom Deleter</a>.
     </footer>
   </div>
@@ -183,7 +188,8 @@ export default Vue.extend({
       }
     } catch (e) {
       console.log("can't get permissions");
-      this.error = "Sorry, this browser isn't compatible with Zoom Escaper. Please try Chrome on desktop.";
+      this.error =
+        "Sorry, this browser isn't compatible with Zoom Escaper. Please try Chrome on desktop.";
     }
 
     for (let e of effects) {
