@@ -131,7 +131,7 @@
         class=""
         @change="onChangeFile"
         ref="file"
-        accept=".mp3"
+        accept=".mp3,.wav,.m4a,.ogg"
       />
       <label for="assetsFieldHandle" class="">
         <div>
@@ -377,9 +377,8 @@ export default Vue.extend({
     },
 
     onChangeFile() {
-      // this.filelist = [...this.$refs.file.files];
-      // console.log(this.filelist);
       for (let f of this.$refs.file.files) {
+        if (!f.type.includes("audio")) continue;
         const url = URL.createObjectURL(f);
         const effect = {
           label: f.name,
@@ -400,26 +399,15 @@ export default Vue.extend({
 
     dragoverFile(event) {
       event.preventDefault();
-      // Add some visual fluff to show the user can drop its files
-      if (!event.currentTarget.classList.contains("bg-green-300")) {
-        event.currentTarget.classList.remove("bg-gray-100");
-        event.currentTarget.classList.add("bg-green-300");
-      }
     },
 
     dragleaveFile(event) {
-      // Clean up
-      event.currentTarget.classList.add("bg-gray-100");
-      event.currentTarget.classList.remove("bg-green-300");
     },
 
     dropFile(event) {
       event.preventDefault();
       this.$refs.file.files = event.dataTransfer.files;
       this.onChangeFile(); // Trigger the onChange event manually
-      // Clean up
-      event.currentTarget.classList.add("bg-gray-100");
-      event.currentTarget.classList.remove("bg-green-300");
     },
   },
 });
