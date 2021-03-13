@@ -393,10 +393,6 @@ export default Vue.extend({
       }
     },
 
-    removeFile(i) {
-      this.filelist.splice(i, 1);
-    },
-
     dragoverFile(event) {
       event.preventDefault();
     },
