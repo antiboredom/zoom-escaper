@@ -97,7 +97,7 @@
             :id="e.label"
           />
           <label :for="e.label">{{ e.label }}</label>
-          <img :src="e.icon" :alt="e.label + ' icon'" />
+          <img v-if="e.icon" :src="e.icon" :alt="e.label + ' icon'" />
         </div>
         <div class="params">
           <div v-for="param in e.params" class="param">
@@ -114,6 +114,31 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div
+      v-if="running"
+      class="drop-file"
+      @dragover="dragoverFile"
+      @dragleave="dragleaveFile"
+      @drop="dropFile"
+    >
+      <input
+        type="file"
+        multiple
+        name="fields[assetsFieldHandle][]"
+        id="assetsFieldHandle"
+        class=""
+        @change="onChangeFile"
+        ref="file"
+        accept=".mp3"
+      />
+      <label for="assetsFieldHandle" class="">
+        <div>
+          Drop an mp3 file or
+          <span class="underline">click here</span> to upload your own sounds.
+        </div>
+      </label>
     </div>
 
     <footer>
@@ -215,6 +240,7 @@ export default Vue.extend({
       effects: [],
       permission: false,
       error: null,
+      filelist: [],
     };
   },
 
@@ -348,6 +374,52 @@ export default Vue.extend({
         params[p.key] = p.val;
       }
       toneEffect.set(params);
+    },
+
+    onChangeFile() {
+      // this.filelist = [...this.$refs.file.files];
+      // console.log(this.filelist);
+      for (let f of this.$refs.file.files) {
+        const url = URL.createObjectURL(f);
+        const effect = {
+          label: f.name,
+          on: false,
+          file: url,
+          params: [{ label: "Volume", key: "volume", min: -30, max: 30, val: 0 }],
+          function: "Player",
+          type: "file",
+        };
+        effects.push({ effect: new Tone.Player(url), label: f.name });
+        this.effects.push(effect);
+      }
+    },
+
+    removeFile(i) {
+      this.filelist.splice(i, 1);
+    },
+
+    dragoverFile(event) {
+      event.preventDefault();
+      // Add some visual fluff to show the user can drop its files
+      if (!event.currentTarget.classList.contains("bg-green-300")) {
+        event.currentTarget.classList.remove("bg-gray-100");
+        event.currentTarget.classList.add("bg-green-300");
+      }
+    },
+
+    dragleaveFile(event) {
+      // Clean up
+      event.currentTarget.classList.add("bg-gray-100");
+      event.currentTarget.classList.remove("bg-green-300");
+    },
+
+    dropFile(event) {
+      event.preventDefault();
+      this.$refs.file.files = event.dataTransfer.files;
+      this.onChangeFile(); // Trigger the onChange event manually
+      // Clean up
+      event.currentTarget.classList.add("bg-gray-100");
+      event.currentTarget.classList.remove("bg-green-300");
     },
   },
 });
@@ -545,6 +617,19 @@ button {
   margin: 20px 0px;
   background-color: lightpink;
   padding: 20px;
+}
+
+.drop-file {
+  background-color: #eee;
+  padding: 20px;
+  margin: 20px 0px;
+  opacity: 1;
+  color: #666;
+  text-align: center;
+}
+
+.drop-file input {
+  display: none;
 }
 
 @media (max-width: 768px) {
