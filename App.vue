@@ -10,7 +10,7 @@
         <h1>Zoom Escaper</h1>
 
         <p class="about">
-          Zoom Escaper is a simple tool to help you escape Zoom meetings and other videoconferencing
+          Zoom Escaper is a tool to help you escape Zoom meetings and other videoconferencing
           scenarios. It allows you to self-sabotage your audio stream, making your presence
           unbearable to others.
         </p>
@@ -19,38 +19,33 @@
 
     <div class="instructions">
       <h2>Instructions</h2>
-      <p>
-        Zoom Escaper only works in Chrome on desktop, and requires a secondary piece of software
-        called VB-Cable.
-      </p>
       <ol>
+        <li v-if="error">Load this page on Chrome on desktop.</li>
         <li v-if="!permission">
-          ENABLE microphone access on this site by clicking the big "Enable Microphone" button (you
+          Enable microphone access on this site by clicking the big "Enable Microphone" button (you
           only need to do this once).
         </li>
         <li>
-          INSTALL <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a
-          ><span class="hidden"
+          Download and install
+          <a href="https://vb-audio.com/Cable/" target="_blank">VB-Cable</a>.<span class="hidden"
             >*
-            <div>VB-Cable is donationware, and has no affilition with Zoom Escaper</div></span
+            <div>VB-Cable is donationware, and has no affiliation with Zoom Escaper</div></span
           >
-          and when the installation is complete, refresh this website.
+          Then, refresh this website.
         </li>
-        <li>
-          PREVIEW your sound by switching the Output dropdown on this site to your computer speakers
-          or headphones. Experiment with audio settings for your meeting.
-        </li>
-        <li>START YOUR ZOOM CALL and switch the Output on this page to "VB-Cable".</li>
-        <li>IN ZOOM set your microphone to "VB-Cable".</li>
-        <li>
-          TURNING IT OFF: Deactivate the Zoom Escaper by switching the microphone settings in Zoom
-          back to your computer's mic, and exit this website.
-        </li>
+        <li>Hit the Start button. Play with the effects.</li>
       </ol>
+        <p>To use in Zoom:</p>
+          <ol type="1" start="3">
+            <li>Switch the Output on this page to "VB-Cable" <span class="hidden hidden-image"><img class="question" src="images/question3.gif"><div><img src="images/settings2.gif"></div><span></li>
+            <li>In Zoom, set your microphone to "VB-Cable" <span class="hidden hidden-image"><img class="question" src="images/question3.gif"><div><img src="images/zoomsettings.gif"></div><span></li>
+            <li>
+              To turn off: switch the microphone settings in Zoom back to your computer's mic.
+            </li>
+          </ol>
       <p>
-        Warning: During your Zoom call, only your coworkers will be able to hear the audio
-        interference applied to your voice. You will not be able to hear it yourself. Ensure that
-        you preview the use of this tool before deployment.
+        Warning: During your Zoom call, you won't be able to hear the audio interference applied to
+        your voice.
       </p>
     </div>
 
@@ -276,10 +271,22 @@ export default Vue.extend({
         .filter((d) => d.kind === "audiooutput")
         .map((d) => ({ text: d.label, value: d.deviceId }));
 
-      this.inputDevice = inputs[0].value;
+      const builtInMic = inputs.find((d) => d.text.includes("Built-in"));
+      if (builtInMic) this.inputDevice = builtInMic.value;
+      else this.inputDevice = inputs[0].value;
 
-      const vbDevice = outputs.find((d) => d.text.includes("VB"));
-      if (vbDevice) this.outputDevice = vbDevice.value;
+      // const vbDevice = outputs.find((d) => d.text.includes("VB"));
+      // if (vbDevice) this.outputDevice = vbDevice.value;
+
+      const headphones = outputs.find((d) => d.text.includes("Headphone"));
+      const bluetooth = outputs.find((d) => d.text.includes("Bluetooth"));
+      if (headphones) {
+        this.outputDevice = headphones.value;
+      } else if (bluetooth) {
+        this.outputDevice = bluetooth.value;
+      } else {
+        this.outputDevice = outputs[0].value;
+      }
 
       this.inputs = inputs;
       this.outputs = outputs;
@@ -304,7 +311,13 @@ export default Vue.extend({
 
       this.mic = new Tone.UserMedia();
       this.mic.open(this.inputDevice);
-      this.mic.connect(this.destination);
+
+      const vbDevice = this.outputs.find((d) => d.text.includes("VB"));
+      if (vbDevice && this.outputDevice === vbDevice.value) {
+        this.mic.connect(this.destination);
+      }
+
+      // this.mic.connect(this.destination);
 
       // actually instantiate the tone effects now that everything else is good to go
       for (let e of effects) {
@@ -342,6 +355,16 @@ export default Vue.extend({
     async changeDevice() {
       if (this.running) {
         await this.audio.setSinkId(this.outputDevice);
+        this.mic.close();
+        this.mic.open(this.inputDevice);
+        try {
+          this.mic.disconnect(this.destination);
+        } catch (e) {}
+        // this.mic.connect(this.destination);
+        const vbDevice = this.outputs.find((d) => d.text.includes("VB"));
+        if (vbDevice && this.outputDevice === vbDevice.value) {
+          this.mic.connect(this.destination);
+        }
       }
     },
 
@@ -397,8 +420,7 @@ export default Vue.extend({
       event.preventDefault();
     },
 
-    dragleaveFile(event) {
-    },
+    dragleaveFile(event) {},
 
     dropFile(event) {
       event.preventDefault();
@@ -585,6 +607,22 @@ button {
   left: 10px;
   top: 10px;
   font-size: 14px;
+}
+
+.hidden-image div {
+  width: 600px;
+  top: 20px;
+  left: -300px;
+}
+
+.hidden-image img {
+  width: 100%;
+}
+
+.hidden-image .question {
+  width: auto;
+  height: 18px;
+  position: absolute;
 }
 
 .hidden:hover div {
