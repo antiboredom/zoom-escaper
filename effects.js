@@ -75,7 +75,7 @@ let effects = [
 
 for (let e of effects) {
   if (e.file) {
-    e.params = [{ label: "Volume", key: "volume", min: -30, max: 30, val: 0 }];
+    e.params = [{ label: "Volume", key: "volume", min: -50, max: 12, val: -20 }];
     e.type = "file";
     e.function = "Player";
   }

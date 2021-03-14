@@ -326,6 +326,7 @@ export default Vue.extend({
           e.effect = new Tone[e.function](...params);
         } else if (e.type === "file") {
           e.effect = new Tone.Player(e.file);
+          e.effect.set({volume: e.params[0].val});
         } else {
           e.effect = new VolumeEffect(this.destination);
         }
@@ -407,7 +408,7 @@ export default Vue.extend({
           label: f.name,
           on: false,
           file: url,
-          params: [{ label: "Volume", key: "volume", min: -30, max: 30, val: 0 }],
+          params: [{ label: "Volume", key: "volume", min: -50, max: 12, val: -20 }],
           function: "Player",
           type: "file",
         };
