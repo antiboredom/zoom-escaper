@@ -19,11 +19,13 @@
 
     <div class="instructions">
       <h2>Instructions</h2>
+      <a class="video-tutorial" href="https://www.youtube.com/watch?v=r_LhwsMAaAc" target="_blank"
+        >Watch the<br />Video Tutorial</a
+      >
       <ol>
         <li v-if="error">Load this page on Chrome on desktop.</li>
         <li v-if="!permission">
-          Enable microphone access on this site by clicking the big "Enable Microphone" button (you
-          only need to do this once).
+          Enable microphone access on this site by clicking the big "Enable Microphone" button.
         </li>
         <li>
           Download and install
@@ -35,14 +37,24 @@
         </li>
         <li>Hit the Start button. Play with the effects.</li>
       </ol>
-        <p>To use in Zoom:</p>
-          <ol type="1" start="3">
-            <li>Switch the Output on this page to "VB-Cable" <span class="hidden hidden-image"><img class="question" src="images/question3.gif"><div><img src="images/settings2.gif"></div><span></li>
-            <li>In Zoom, set your microphone to "VB-Cable" <span class="hidden hidden-image"><img class="question" src="images/question3.gif"><div><img src="images/zoomsettings.gif"></div><span></li>
-            <li>
-              To turn off: switch the microphone settings in Zoom back to your computer's mic.
-            </li>
-          </ol>
+      <p>To use in Zoom:</p>
+      <ol type="1" start="3">
+        <li>
+          Switch the Output on this page to "VB-Cable"
+          <span class="hidden hidden-image"
+            ><img class="question" src="images/question3.gif" />
+            <div><img src="images/settings2.gif" /></div
+          ></span>
+        </li>
+        <li>
+          In Zoom, set your microphone to "VB-Cable"
+          <span class="hidden hidden-image"
+            ><img class="question" src="images/question3.gif" />
+            <div><img src="images/zoomsettings.gif" /></div
+          ></span>
+        </li>
+        <li>To turn off: switch the microphone settings in Zoom back to your computer's mic.</li>
+      </ol>
       <p>
         Warning: During your Zoom call, you won't be able to hear the audio interference applied to
         your voice.
@@ -326,7 +338,7 @@ export default Vue.extend({
           e.effect = new Tone[e.function](...params);
         } else if (e.type === "file") {
           e.effect = new Tone.Player(e.file);
-          e.effect.set({volume: e.params[0].val});
+          e.effect.set({ volume: e.params[0].val });
         } else {
           e.effect = new VolumeEffect(this.destination);
         }
@@ -505,6 +517,7 @@ a {
   padding: 20px;
   margin-bottom: 20px;
   font-size: 0.9em;
+  position: relative;
 }
 
 ul {
@@ -653,6 +666,24 @@ button {
 
 .drop-file input {
   display: none;
+}
+
+.video-tutorial {
+  position: absolute;
+  right: 20px;
+  top: 40px;
+  transform: rotate(15deg);
+  animation: 3s infinite alternate lolrotate;
+  animation-timing-function: linear;
+}
+
+@keyframes lolrotate {
+  0% {
+    transform: rotate(-20deg);
+  }
+  100% {
+    transform: rotate(20deg);
+  }
 }
 
 @media (max-width: 768px) {
