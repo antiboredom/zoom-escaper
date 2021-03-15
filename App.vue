@@ -20,7 +20,7 @@
     <div class="instructions">
       <h2>Instructions</h2>
       <a class="video-tutorial" href="https://www.youtube.com/watch?v=r_LhwsMAaAc" target="_blank"
-        >Watch the<br />Video Tutorial</a
+        ><img src="images/video.gif" /> Watch the Video Tutorial</a
       >
       <ol>
         <li v-if="error">Load this page on Chrome on desktop.</li>
@@ -672,9 +672,15 @@ button {
   position: absolute;
   right: 20px;
   top: 40px;
+  width: 100px;
+  text-decoration: none;
   transform: rotate(15deg);
   animation: 3s infinite alternate lolrotate;
   animation-timing-function: linear;
+}
+
+.video-tutorial img {
+  height: 16px;
 }
 
 @keyframes lolrotate {
