@@ -149,14 +149,15 @@
     </div>
 
     <footer>
-      Zoom Escaper is made by <a href="https://lav.io">Sam Lavigne</a>. View the code
-      <a href="https://github.com/antiboredom/zoom-escaper">here</a>. Sound sample credits:
+      Zoom Escaper is made by <a href="https://lav.io">Sam Lavigne</a>, who you can support on
+      <a href="https://www.patreon.com/samlavigne">patreon</a>.<br />View the code for this project
+      <a href="https://github.com/antiboredom/zoom-escaper">here</a>.<br />Sound sample credits:
       <a href="https://freesound.org/people/ciccarelli/sounds/185575/">1</a>,
       <a href="https://freesound.org/people/qubodup/sounds/200428/">2</a>,
       <a href="https://freesound.org/people/Meepalicious/sounds/244807/">3</a>,
       <a href="https://freesound.org/people/rpdud27/sounds/474484/">4</a>,
       <a href="https://freesound.org/people/InspectorJ/sounds/400991/">5</a>,
-      <a href="https://freesound.org/people/nomerodin1/sounds/473997/">6</a>. Also see
+      <a href="https://freesound.org/people/nomerodin1/sounds/473997/">6</a>.<br />Also see
       <a href="https://antiboredom.github.io/zoom-deleter">Zoom Deleter</a>.
     </footer>
   </div>
