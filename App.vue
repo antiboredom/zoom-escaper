@@ -56,8 +56,9 @@
         <li>To turn off: switch the microphone settings in Zoom back to your computer's mic.</li>
       </ol>
       <p>
-        Warning: During your Zoom call, you won't be able to hear the audio interference applied to
-        your voice.
+        Note that during your Zoom call, you won't be able to hear the audio interference applied to
+        your voice. Also, please be mindful of how you use this tool. Consider who is in the call and what
+        impact it will have.
       </p>
     </div>
 
